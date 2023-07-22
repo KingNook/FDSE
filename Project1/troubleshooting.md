@@ -1,3 +1,5 @@
+ERROR: IOError: unlink(".\\gravitycurrent.jld2"): resource busy or locked (EBUSY)
+
 PROBLEM
 Potential Problem
 
