@@ -131,5 +131,4 @@ nothing # hide
 run!(simulation)
 
 # After the simulation is different, plot the results and save a movie
-# include("plot_gravitycurrent.jl")
 include("plot_gravitycurrent_plotly.jl")
