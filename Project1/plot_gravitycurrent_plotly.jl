@@ -1,7 +1,7 @@
 
 # This script reads in output from gravitycurrent.jl, makes a plot, and saves an animation
 
-using Oceananigans, JLD2, Plots, Printf
+using Oceananigans, JLD2, Plots, Plotly, Printf
 
 # Set the filename (without the extension)
 filename = "gravitycurrent"
@@ -34,7 +34,7 @@ t_save = zeros(length(iterations))
 b_bottom = zeros(length(b_ic[:, 1, 1]), length(iterations))
 
 # Here, we loop over all iterations
-anim = @animate for (i, iter) in enumerate(iterations)
+anim = Plots.@animate for (i, iter) in enumerate(iterations)
 
     @info "Drawing frame $i from iteration $iter..."
 
@@ -53,11 +53,20 @@ anim = @animate for (i, iter) in enumerate(iterations)
     b_bottom[:,i] = b_xz[:, 1, 1]; # This is the buouyancy along the bottom wall
     t_save[i] = t # save the time
 
+        #=
         u_xz_plot = heatmap(xu, zu, u_xz'; color = :balance, xlabel = "x", ylabel = "z", aspect_ratio = :equal);  
         v_xz_plot = heatmap(xv, zv, v_xz'; color = :balance, xlabel = "x", ylabel = "z", aspect_ratio = :equal); 
         w_xz_plot = heatmap(xw, zw, w_xz'; color = :balance, xlabel = "x", ylabel = "z", aspect_ratio = :equal); 
         b_xz_plot = heatmap(xb, zb, b_xz'; color = :thermal, xlabel = "x", ylabel = "z", aspect_ratio = :equal); 
-        c_xz_plot = heatmap(xb, zb, c_xz'; color = :thermal, xlabel = "x", ylabel = "z", aspect_ratio = :equal); 
+        c_xz_plot = heatmap(xb, zb, c_xz'; color = :thermal, xlabel = "x", ylabel = "z", aspect_ratio = :equal);
+        =#
+
+        u_xz_plot = Plotly.heatmap(x = xu, y = zu, z = u_xz, colorscale = "balance")
+        v_xz_plot = Plotly.heatmap(x = xv, y = zv, z = v_xz, colorscale = "balance")
+        w_xz_plot = Plotly.heatmap(x = xw, y = zw, z = w_xz, colorscale = "balance")
+        b_xz_plot = Plotly.heatmap(x = xb, y = zb, z = b_xz, colorscale = "balance")
+        c_xz_plot = Plotly.heatmap(x = xc, y = zc, z = c_xz, colorscale = "balance")
+
 
     u_title = @sprintf("u, t = %s", round(t));
     v_title = @sprintf("v, t = %s", round(t));
@@ -66,8 +75,8 @@ anim = @animate for (i, iter) in enumerate(iterations)
     c_title = @sprintf("c (dye), t = %s", round(t));
 
 # Combine the sub-plots into a single figure
-    plot(b_xz_plot, c_xz_plot, layout = (2, 1), size = (1600, 400),
-    title = [b_title c_title])
+    Plotly.plot(b_xz_plot)
+    Plotly.plot(c_xz_plot)
 
     iter == iterations[end] && close(file_xz)
 end
@@ -78,4 +87,4 @@ mp4(anim, "gravitycurrent.mp4", fps = 20) # hide
 # Now, make a plot of our saved variables
 # In this case, plot the buoyancy at the bottom of the domain as a function of x and t
 # You can (and should) change this to interrogate other quantities
-heatmap(xb, t_save, b_bottom', xlabel="x", ylabel="t", title="buoyancy at z=0")
+Plotly.heatmap(x = xb, y = t_save, z = b_bottom', xlabel="x", ylabel="t", title="buoyancy at z=0")
