@@ -33,7 +33,9 @@ vel=(S0 * h) .* tanh.( (z .- LZ/2) ./ h)
 dbdz = similar(z)
 dudz = similar(z)
 
-for i = 2:length(z)
+zlength = length(z)
+
+for i = 2:zlength
     dbdz[i] = (buoy[i] - buoy[i - 1]) / (z[i] - z[i - 1])
     dudz[i] = (vel[i] - vel[i - 1]) / (z[i] - z[i - 1])
 end

@@ -36,7 +36,7 @@ b_bottom = zeros(length(b_ic[:, 1, 1]), length(iterations))
 # Here, we loop over all iterations
 anim = @animate for (i, iter) in enumerate(iterations)
 
-    #@info "Drawing frame $i from iteration $iter..."
+    @info "Drawing frame $i from iteration $iter..."
 
     u_xz = file_xz["timeseries/u/$iter"][:, 1, :];
     v_xz = file_xz["timeseries/v/$iter"][:, 1, :];
@@ -53,11 +53,11 @@ anim = @animate for (i, iter) in enumerate(iterations)
     b_bottom[:,i] = b_xz[:, 1, 1]; # This is the buouyancy along the bottom wall
     t_save[i] = t # save the time
 
-        u_xz_plot = heatmap(xu, zu, u_xz'; color = :balance, xlabel = "x", ylabel = "z", aspect_ratio = :equal);  
-        v_xz_plot = heatmap(xv, zv, v_xz'; color = :balance, xlabel = "x", ylabel = "z", aspect_ratio = :equal); 
-        w_xz_plot = heatmap(xw, zw, w_xz'; color = :balance, xlabel = "x", ylabel = "z", aspect_ratio = :equal); 
-        b_xz_plot = heatmap(xb, zb, b_xz'; color = :thermal, xlabel = "x", ylabel = "z", aspect_ratio = :equal); 
-        c_xz_plot = heatmap(xb, zb, c_xz'; color = :thermal, xlabel = "x", ylabel = "z", aspect_ratio = :equal); 
+        u_xz_plot = Plots.heatmap(xu, zu, u_xz'; color = :balance, xlabel = "x", ylabel = "z", aspect_ratio = :equal);  
+        v_xz_plot = Plots.heatmap(xv, zv, v_xz'; color = :balance, xlabel = "x", ylabel = "z", aspect_ratio = :equal); 
+        w_xz_plot = Plots.heatmap(xw, zw, w_xz'; color = :balance, xlabel = "x", ylabel = "z", aspect_ratio = :equal); 
+        b_xz_plot = Plots.heatmap(xb, zb, b_xz'; color = :thermal, xlabel = "x", ylabel = "z", aspect_ratio = :equal); 
+        c_xz_plot = Plots.heatmap(xb, zb, c_xz'; color = :thermal, xlabel = "x", ylabel = "z", aspect_ratio = :equal); 
 
     u_title = @sprintf("u, t = %s", round(t));
     v_title = @sprintf("v, t = %s", round(t));
@@ -72,18 +72,9 @@ anim = @animate for (i, iter) in enumerate(iterations)
 end
 
 # Save the animation to a file
-# mp4(anim, "gravitycurrent.mp4", fps = 20) # hide
+mp4(anim, "gravitycurrent.mp4", fps = 20) # hide
 
 # Now, make a plot of our saved variables
 # In this case, plot the buoyancy at the bottom of the domain as a function of x and t
 # You can (and should) change this to interrogate other quantities
-
-lobf_x = range(0, 10, length=50)
-lobf_y = range(0, 20, length=100)
-
-lobf = plot(lobf_x, lobf_y)
-b_heatmap = heatmap(xb, t_save, b_bottom', xlabel="x", ylabel="t", title="buoyancy at z=0")
-
-#plot(lobf, b_heatmap, layout = (2, 1), size = (1980, 1080))
-#xlims!(0, 10)
-#ylims!(0, 20)
+Plots.heatmap(xb, t_save, b_bottom', xlabel="x", ylabel="t", title="buoyancy at z=0")

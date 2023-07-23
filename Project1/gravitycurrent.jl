@@ -21,7 +21,7 @@ duration = 20 # The non-dimensional duration of the simulation
 Re = 5000
 
 # Set the change in the non-dimensional buouancy 
-Δb = 4
+Δb = 1
 
 # Set the amplitude of the random perturbation (kick)
 kick = 0.05
@@ -60,14 +60,15 @@ model = NonhydrostaticModel(; grid,
                buoyancy = Buoyancy(model=BuoyancyTracer()), # this tells the model that b will act as the buoyancy (and influence momentum) 
                 closure = (ScalarDiffusivity(ν = 1 / Re, κ = 1 / Re)),  # set a constant kinematic viscosity and diffusivty, here just 1/Re since we are solving the non-dimensional equations 
     boundary_conditions = (u = u_bcs, w = w_bcs, b = b_bcs), # specify the boundary conditions that we defiend above
-               coriolis = nothing # this line tells the mdoel not to include system rotation (no Coriolis acceleration)
-)
+               coriolis = nothing # this line tells the model not to include system rotation (no Coriolis acceleration)
+) 
 
 # Set initial conditions
 # Here, we start with a tanh function for buoyancy and add a random perturbation to the velocity. 
 uᵢ(x, y, z) = kick * randn()
 vᵢ(x, y, z) = 0
 wᵢ(x, y, z) = kick * randn()
+# bᵢ(x, y, z) = (Δb / 2) * (1 + tanh((x - xc) / Lf))
 bᵢ(x, y, z) = (Δb / 2) * (1 + tanh((x - xc) / Lf))
 cᵢ(x, y, z) = exp(-((x - Lx / 2) / (Lx / 50))^2) # Initialize with a thin tracer (dye) streak in the center of the domain
 
