@@ -28,6 +28,8 @@ file_xz = jldopen(filename * ".jld2")
 ## Extract a vector of iterations
 iterations = parse.(Int, keys(file_xz["timeseries/t"]))
 
+#=
+
 @info "Making an animation from saved data..."
 
 t_save = zeros(length(iterations))
@@ -88,3 +90,5 @@ mp4(anim, "gravitycurrent.mp4", fps = 20) # hide
 # In this case, plot the buoyancy at the bottom of the domain as a function of x and t
 # You can (and should) change this to interrogate other quantities
 Plotly.heatmap(x = xb, y = t_save, z = b_bottom', xlabel="x", ylabel="t", title="buoyancy at z=0")
+
+=#
