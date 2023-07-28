@@ -15,7 +15,7 @@ Nz = 32   # number of gridpoints in the z-direction
 
 # Some timestepping parameters
 max_Δt = 0.05 # maximum allowable timestep 
-duration = 20 # The non-dimensional duration of the simulation
+duration = 100 # The non-dimensional duration of the simulation
 
 # Set the Reynolds number (Re=Ul/ν)
 Re = 5000
@@ -54,7 +54,7 @@ b_bcs = FieldBoundaryConditions(top = FluxBoundaryCondition(0),
 
 # Now, define a 'model' where we specify the grid, advection scheme, bcs, and other settings
 model = NonhydrostaticModel(; grid,
-              advection = UpwindBiasedFifthOrder(),  # Specify the advection scheme.  Another good choice is WENO() which is more accurate but slower
+              advection = WENO(), # UpwindBiasedFifthOrder(),  # Specify the advection scheme.  Another good choice is WENO() which is more accurate but slower
             timestepper = :RungeKutta3, # Set the timestepping scheme, here 3rd order Runge-Kutta
                 tracers = (:b, :c, :d),  # Set the name(s) of any tracers, here b is buoyancy and c is a passive tracer (e.g. dye) // we have added d to be the rhs
                buoyancy = Buoyancy(model=BuoyancyTracer()), # this tells the model that b will act as the buoyancy (and influence momentum) 
@@ -69,8 +69,10 @@ uᵢ(x, y, z) = kick * randn()
 vᵢ(x, y, z) = 0
 wᵢ(x, y, z) = kick * randn()
 # bᵢ(x, y, z) = (Δb / 2) * (1 + tanh((x - xc) / Lf))
+bᵢ(x, y, z) = (Δb / 2) * (1 + tanh((x - (Lx / 2)) / Lf))
 # bᵢ(x, y, z) = Lz - exp(-((x - Lx / 2) / (Lx / 2))^2)
-bᵢ(x, y, z) = x < (Lx / 2) ? (Δb / 2) * (1+tanh(x - xc) / Lf) : (Δb / 2) * (1+tanh(Lx/2 + xc - x) / Lf)
+# bᵢ(x, y, z) = x < Lx / 2 ? (Δb / 2) * (1 + tanh((x - xc) / Lf)) : (Δb / 4) * (2 + tanh(((Lx) - x - xc) / Lf))
+# bᵢ(x, y, z) = (Δb / 2) * (rand())
 cᵢ(x, y, z) = exp(-((x - Lx / 2) / (Lx / 50))^2) # Initialize with a thin tracer (dye) streak in the center of the domain
 dᵢ(x, y, z) = exp(-((x - Lx / 2) / (Lx / 2))^2)
 
