@@ -13,7 +13,6 @@ v_ic = FieldTimeSeries(filename * ".jld2", "v", iterations = 0)
 w_ic = FieldTimeSeries(filename * ".jld2", "w", iterations = 0)
 b_ic = FieldTimeSeries(filename * ".jld2", "b", iterations = 0)
 c_ic = FieldTimeSeries(filename * ".jld2", "c", iterations = 0)
-d_ic = FieldTimeSeries(filename * ".jld2", "d", iterations = 0)
 
 ## Load in coordinate arrays
 ## We do this separately for each variable since Oceananigans uses a staggered grid
@@ -22,7 +21,6 @@ xv, yv, zv = nodes(v_ic)
 xw, yw, zw = nodes(w_ic)
 xb, yb, zb = nodes(b_ic)
 xc, yc, zc = nodes(c_ic)
-xd, yd, zd = nodes(d_ic)
 
 ## Now, open the file with our data
 file_xz = jldopen(filename * ".jld2")
@@ -45,7 +43,6 @@ anim = @animate for (i, iter) in enumerate(iterations)
     w_xz = file_xz["timeseries/w/$iter"][:, 1, :];
     b_xz = file_xz["timeseries/b/$iter"][:, 1, :];
     c_xz = file_xz["timeseries/c/$iter"][:, 1, :];
-    d_xz = file_xz["timeseries/d/$iter"][:, 1, :];
 
 # If you want an x-y slice, you can get it this way:
     # b_xy = file_xy["timeseries/b/$iter"][:, :, 1];
@@ -56,22 +53,21 @@ anim = @animate for (i, iter) in enumerate(iterations)
     b_bottom[:,i] = b_xz[:, 1, 1]; # This is the buouyancy along the bottom wall
     t_save[i] = t # save the time
 
-        u_xz_plot = Plots.heatmap(xu, zu, u_xz'; color = :balance, xlabel = "x", ylabel = "z", aspect_ratio = :equal);  
-        v_xz_plot = Plots.heatmap(xv, zv, v_xz'; color = :balance, xlabel = "x", ylabel = "z", aspect_ratio = :equal); 
-        w_xz_plot = Plots.heatmap(xw, zw, w_xz'; color = :balance, xlabel = "x", ylabel = "z", aspect_ratio = :equal); 
-        b_xz_plot = Plots.heatmap(xb, zb, b_xz'; color = :thermal, xlabel = "x", ylabel = "z", aspect_ratio = :equal); 
-        c_xz_plot = Plots.heatmap(xb, zb, c_xz'; color = :thermal, xlabel = "x", ylabel = "z", aspect_ratio = :equal);
-        d_xz_plot = Plots.heatmap(xd, zd, d_xz'; color = :thermal, xlabel = "x", ylabel = "z", aspect_ratio = :equal); 
+        u_xz_plot = heatmap(xu, zu, u_xz'; color = :balance, xlabel = "x", ylabel = "z", aspect_ratio = :equal);  
+        v_xz_plot = heatmap(xv, zv, v_xz'; color = :balance, xlabel = "x", ylabel = "z", aspect_ratio = :equal); 
+        w_xz_plot = heatmap(xw, zw, w_xz'; color = :balance, xlabel = "x", ylabel = "z", aspect_ratio = :equal); 
+        b_xz_plot = heatmap(xb, zb, b_xz'; color = :thermal, xlabel = "x", ylabel = "z", aspect_ratio = :equal); 
+        c_xz_plot = heatmap(xb, zb, c_xz'; color = :thermal, xlabel = "x", ylabel = "z", aspect_ratio = :equal); 
 
     u_title = @sprintf("u, t = %s", round(t));
     v_title = @sprintf("v, t = %s", round(t));
     w_title = @sprintf("w, t = %s", round(t));
     b_title = @sprintf("b, t = %s", round(t));
     c_title = @sprintf("c (dye), t = %s", round(t));
-    d_title = @sprintf("d (test), t = %s", round(t));
 
 # Combine the sub-plots into a single figure
-    plot(b_xz_plot, c_xz_plot, d_xz_plot, layout = (3, 1), size = (1600, 600), title = [b_title c_title d_title])
+    plot(b_xz_plot, c_xz_plot, layout = (2, 1), size = (1600, 400),
+    title = [b_title c_title])
 
     iter == iterations[end] && close(file_xz)
 end
@@ -82,4 +78,4 @@ mp4(anim, "gravitycurrent.mp4", fps = 20) # hide
 # Now, make a plot of our saved variables
 # In this case, plot the buoyancy at the bottom of the domain as a function of x and t
 # You can (and should) change this to interrogate other quantities
-Plots.heatmap(xb, t_save, b_bottom', xlabel="x", ylabel="t", title="buoyancy at z=0")
+heatmap(xb, t_save, b_bottom', xlabel="x", ylabel="t", title="buoyancy at z=0")
