@@ -1,7 +1,19 @@
 
 # This script reads in output from KH.jl, makes a plot, and saves an animation
 
-using Oceananigans, JLD2, Plotly, Printf
+using Oceananigans, JLD2, Printf, Plots
+
+# ********** User input parameters **********
+Lz = 1    # The z-domain size
+Lx = 10   # The x-domain size (sets the range of wavenumbers to search)
+h = 0.1     # Shear layer width
+NZ = 100  # The number of gridpoints
+dz = LZ / NZ  # The grid spacing - must be evenly spaced
+nu = 1 / 5000  # Kinematic viscosity (or 1/Re)
+kappa = nu    # Diffusivity
+S0 = 10       # Maximum shear
+N0 = sqrt(10)       # Maximum buoyancy frequency
+# ********** End user input parameters **********
 
 # Set the filename (without the extension)
 filename = "KH"
