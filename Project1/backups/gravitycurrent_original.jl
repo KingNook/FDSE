@@ -21,7 +21,7 @@ duration = 20 # The non-dimensional duration of the simulation
 Re = 5000
 
 # Set the change in the non-dimensional buouancy 
-Δb = 2
+Δb = 1
 
 # Set the amplitude of the random perturbation (kick)
 kick = 0.05
@@ -131,5 +131,4 @@ nothing # hide
 run!(simulation)
 
 # After the simulation is different, plot the results and save a movie
-# include("plot_gravitycurrent.jl")
-# include("plot_gravitycurrent_plotly.jl")
+include("plot_gravitycurrent.jl")
