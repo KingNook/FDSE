@@ -54,3 +54,4 @@ end
 
 Plotly.plot(kx, real.(sigma[1, :]), Layout(xaxis_title="kₓ",yaxis_title="growth rate",plot_bgcolor="white",yaxis=attr(gridcolor="lightgrey",zerolinecolor="black"),xaxis=attr(gridcolor="lightgrey",zerolinecolor="black")))
 
+# exit()

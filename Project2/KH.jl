@@ -6,7 +6,7 @@ using Oceananigans
 
 # First, we need to set some physical parameters for the simulation
 # Set the domain size in non-dimensional coordinates
-Lx = 8  # size in the x-direction
+Lx = 13.5  # size in the x-direction
 Lz = 1   # size in the vertical (z) direction 
 
 # Set the grid size
