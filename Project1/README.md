@@ -1,15 +1,14 @@
 # Getting started
 This project will introduce you to Oceananigans and explore the dynamics of gravity currents
 
-To start, we need to install Oceananigans. To do this, open VS Code (if you don't already have it open).
-From the menu bar, select `View` and `Command Palette`. Enter `Julia: Start REPL` and press enter. This should bring up a window in VS Code with a Julia prompt.
+To start, we need to install Oceananigans. To do this, open VS Code (if you don't already have it open). From the `File` menu, select `Open Folder...` and select the `FDSE` folder. To run the Julia REPL, select `View` and then `Command Palette` from the menu bar. Enter `Julia: Start REPL` and press enter. This should bring up a window in VS Code with a Julia prompt.
 
-Julia has a fantastic package manager for installing and updating add-on packages. To install Oceananigans, follow these steps:
-1. To enter the package manager interface, press the `]` key. The `julia>` prompt should change to `pkg>`.
-2. Install Oceananigans by typing `add Oceananigans` and pressing enter (note that this may take a while since it downloads and installs all of the packages that Oceananigans depends on)
-3. Next, install a plotting package by entering `add Plots`. Julia has quite a few plotting packages to chose from, but this is the standard one and is good to start with.
-4. Finally, install the JLD2 package by entering `add JLD2`.  This installs a package called JLD2 which allows reading and writing in a native Julia HDF5-compatible file format.
-5. After Oceananigans and JLD2 have downloaded and installed, exit the package manager by pressing the delete key
+Julia has a fantastic built-in package manager for installing and updating add-on packages. Each of the projects has an environment which contains a list of the packages that will be needed for that project. To activate the required packages, follow these steps: 
+1. Navigate to the project foler in the Julia REPL (e.g. type `cd("Project1")` if you are starting from the FDSE folder. 
+2. Enter the package manager interface by pressing the `]` key. The `julia>` prompt should change to `pkg>` to indicate that the package manager is active.
+3. Type `activate environment` and press return
+4. Type `instantiate` and press return. (Note that if you don't already have the required packages installed on your computer, this step will take some time as the required packages are downloaded  and pre-compiled. However, this step should be very fast afterwards.)
+5. Use the `delete` key to exit the package manager
 
 Now we're ready to run Oceananigans! 🙌 To do this:
 1. In the Explorer window of VS Code, navigate into the Project1 directory. If you don't see the FDSE folder, you can open it from GitHub Desktop using the Repository menu and selecting `Open in Visual Studio Code`
@@ -24,11 +23,11 @@ Now that the code is running, we're ready to do some science! 🧪
 Although it was designed to simulate ocean physics, Oceananigans is a powerful general purpose computational fluid dyanmics (CFD) code. Here, we will use Oceananigans to explore the dynamics of gravity currents in the lock-release problem.
 
 Oceananigans can solve equations in dimensional or non-dimensional form. In this project we will use it to solve the non-dimensional incompressible, Boussinesq equations, which can be written:
-$$\frac{\partial \mathbf{u}}{\partial t}+\mathbf{u}\cdot \nabla \mathbf{u}=-\nabla p+\frac{1}{Re} \nabla^2\mathbf{u}+ b \hat{\mathbf{z}},$$
+$$\frac{\partial \mathbf{u}}{\partial t}+\mathbf{u}\cdot \nabla \mathbf{u}=-\nabla p+\frac{1}{Re} \nabla^2\mathbf{u}+ Ri \hspace{2pt} b \hat{\mathbf{z}},$$
 $$\frac{\partial b}{\partial t}+\mathbf{u}\cdot \nabla b = \frac{1}{Re Pr} \nabla^2 b,$$
 $$\nabla\cdot \mathbf{u} = 0,$$
-where $\mathbf{u}=(u,v,w)$ is the velocity vector and $\nabla=(\partial/\partial x,\partial/\partial y,\partial/\partial z)$. The variables have made non-dimensional using a length scale, $L$, velocity, $U_0$, and buoyancy, $B_0$. Note that the constant density, $\rho_0$, has been absorbed into the definition of the non-dimensional pressure, $p$. In this case, the non dimensional Reynolds, Richardson, and Prandtl numbers are
-$$Re\equiv \frac{U_0 L}{\nu} \quad \mbox{and} \quad Pr\equiv \frac{\nu}{\kappa},$$
+where $\mathbf{u}=(u,v,w)$ is the velocity vector and $\nabla=(\partial/\partial x,\partial/\partial y,\partial/\partial z)$. The variables have made non-dimensional using a length scale, $L$, velocity, $U_0$, and buoyancy, $B_0$. Note that the constant density, $\rho_0$, has been absorbed into the definition of the non-dimensional pressure, $p$. In this case, the non dimensional Reynolds, Richardson and Prandtl numbers are
+$$Re\equiv \frac{U_0 L}{\nu}, \quad Ri\equiv \frac{B_0 L}{U_0^2} \quad \mbox{and} \quad Pr\equiv \frac{\nu}{\kappa},$$
 and $\nu$ and $\kappa$ are the kinematic viscosity and molecular diffusivity, respectively. 
 
 Have a look at `gravitycurrent.jl`.  It is extensively commented which should help you understand what is happening
@@ -39,7 +38,7 @@ Oceananigans scripts have several standard components:
 3. Build a model grid
 4. Set the boundary and initial conditions
 5. Create `model` and `simulation` objects
-6. Define callbacks to call functions periodically durind the simulation
+6. Define callbacks to call functions periodically during the simulation
 7. Run the model
 8. Process and plot the output
 
@@ -79,7 +78,7 @@ Try repeating the gravity current experiments, but start with a stable buoyancy 
 
 ## Gravity currents on a slope
 
-Oceananigans gives us control of the direction in which gravity points. By changing the angle of gravity in the (x,z) plane, we can use this to simulate a gravity current on a prograde or retrograde slope. To do this, add a definition of the variable `gravity_unit_vector` in the call to Buoyancy when `model` is defined. Note that the plots that are made in `plot_gravitycurrent.jl` will be in a tilted reference frame aligned with the computational domain. You might want to try to rotate these plots to have gravity point down. How does the tile angle influence the speed of the gravity current? 
+Oceananigans gives us control of the direction in which gravity points. By changing the angle of gravity in the (x,z) plane, we can use this to simulate a gravity current on a prograde or retrograde slope. To do this, add a definition of the variable `gravity_unit_vector` in the call to Buoyancy when `model` is defined. Note that the plots that are made in `plot_gravitycurrent.jl` will be in a tilted reference frame aligned with the computational domain. How does the tile angle influence the speed of the gravity current? 
 
 
 
